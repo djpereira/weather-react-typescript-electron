@@ -18,10 +18,20 @@ export class Weather extends React.Component<void, WeatherState>{
     };
   }
 
-  private handleSearch(location: string) {
+  private showLoading() {
     this.setState({
       isLoading: true
     });
+  }
+
+  private hideLoading() {
+    this.setState({
+      isLoading: false
+    });
+  }
+
+  private handleSearch(location: string) {
+    this.showLoading();
     WeatherAPI.getTemp(location)
       .then(temp => {
         this.setState({
@@ -29,14 +39,8 @@ export class Weather extends React.Component<void, WeatherState>{
           temp: temp,
         });
       })
-      .catch(reason => {
-        alert(reason);
-      })
-      .then(() => {
-        this.setState({
-          isLoading: false
-        });
-      });
+      .catch(reason => alert(reason))
+      .then(() => this.hideLoading());
   }
 
   private renderMessage() {
@@ -53,7 +57,7 @@ export class Weather extends React.Component<void, WeatherState>{
     return (
       <div>
         <h2>Get Weather</h2>
-        <WeatherForm onSearch={e=> this.handleSearch(e)} />
+        <WeatherForm onSearch={e => this.handleSearch(e)} />
         {this.renderMessage()}
       </div>
     );
